@@ -1,0 +1,35 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main
+      - feature-branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Specifies Node.js version
+
+      - name: Install dependencies
+        run: npm install  # Installs all project dependencies
+
+      - name: Build project
+        run: npm run build  # Builds the project to the ./build directory
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.1.1  # Deploys to Netlify
+        with:
+          publish-dir: ./build  # The build output directory
+          production-deploy: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}  # Your Netlify token
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}        # Your Netlify Site ID
